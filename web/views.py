@@ -213,11 +213,12 @@ def annotations_list():
             IndexName=index,
             KeyConditionExpression=Key(key).eq(user_id)
         )
-        info = results["Items"]
     except ClientError as e:
         logging.error(e)
         code = e.response['ResponseMetadata']['HTTPStatusCode']
         abort(code)
+
+    info = results["Items"]
 
     # Convert Request time to local time
     for item in info:
@@ -248,7 +249,11 @@ def annotation_details(id):
         code = e.response['ResponseMetadata']['HTTPStatusCode']
         abort(code)
 
-    info = results["Items"][0]
+    try:
+        info = results["Items"][0]
+    except IndexError:
+        # No items were returned
+        abort(404)
 
     # Check that this user is authorized
     if info["user_id"] != session["primary_identity"]:
@@ -295,7 +300,10 @@ def annotation_log(id):
         code = e.response['ResponseMetadata']['HTTPStatusCode']
         abort(code)
 
-    info = results["Items"][0]
+    try:
+        info = results["Items"][0]
+    except IndexError:
+        abort(404)
 
     try:
         # Read the log file directly from S3 and load it into memory
