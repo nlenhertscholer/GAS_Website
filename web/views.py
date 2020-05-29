@@ -14,6 +14,7 @@ import json
 import logging
 from datetime import datetime
 import stripe
+import io
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -68,6 +69,26 @@ def upload_to_db(data):
         raise
 
 
+def create_presigned_url(bucket_name, object_name,
+                         expiration=app.config['AWS_SIGNED_REQUEST_EXPIRATION']):
+
+    """Creates a presigned url given the bucket and object names
+       Source for learning how to do this from
+       https://boto3.amazonaws.com/v1/documentation/api/latest/guide/s3-presigned-urls.html"""
+
+    s3 = boto3.client('s3', region_name=app.config["AWS_REGION_NAME"])
+    try:
+        response = s3.generate_presigned_url(app.config['AWS_S3_CLIENTMETHOD'],
+                                             Params={'Bucket': bucket_name,
+                                                     'Key': object_name},
+                                             ExpiresIn=expiration)
+    except ClientError as e:
+        logging.error(e)
+        raise
+
+    return response
+
+
 @app.route('/annotate', methods=['GET'])
 @authenticated
 def annotate():
@@ -81,7 +102,7 @@ def annotate():
 
     # Generate unique ID to be used as S3 key (name)
     key_name = app.config['AWS_S3_KEY_PREFIX'] + user_id + '/' + \
-               str(uuid.uuid4()) + '~${filename}'
+        str(uuid.uuid4()) + '~${filename}'
 
     # Create the redirect URL
     redirect_url = str(request.url) + '/job'
@@ -216,16 +237,32 @@ def annotation_details(id):
     key = app.config["AWS_DYNAMODB_PRIMARY_KEY"]
     table = app.config["AWS_DYNAMODB_ANNOTATIONS_TABLE"]
 
-    db = boto3.resource('dynamodb', region_name=app.config["AWS_REGION_NAME"])
-    table = db.Table(table)
-    results = table.query(
-        KeyConditionExpression=Key(key).eq(id)
-    )
+    try:
+        db = boto3.resource('dynamodb', region_name=app.config["AWS_REGION_NAME"])
+        table = db.Table(table)
+        results = table.query(
+            KeyConditionExpression=Key(key).eq(id)
+        )
+    except ClientError as e:
+        logging.error(e)
+        code = e.response['ResponseMetadata']['HTTPStatusCode']
+        abort(code)
+
     info = results["Items"][0]
 
     # Check that this user is authorized
     if info["user_id"] != session["primary_identity"]:
         abort(403)
+
+    # Generate Presigned URL so user can download input and results file
+    try:
+        info['input_file_url'] = create_presigned_url(info['s3_inputs_bucket'],
+                                                      info['s3_key_input_file'])
+        info['result_file_url'] = create_presigned_url(info['s3_results_bucket'],
+                                                       info['s3_key_result_file'])
+    except ClientError as e:
+        code = e.response['ResponseMetadata']['HTTPStatusCode']
+        abort(code)
 
     # Convert to local time
     info["submit_time"] = time.strftime('%Y-%m-%d %H:%M',
@@ -233,6 +270,7 @@ def annotation_details(id):
     info["complete_time"] = time.strftime('%Y-%m-%d %H:%M',
                                           time.localtime(info["complete_time"]))
 
+    # Render HTML page
     return render_template('annotation_details.html', annotation=info)
 
 
@@ -241,7 +279,40 @@ def annotation_details(id):
 def annotation_log(id):
     """Display the log file contents for an annotation job
     """
-    pass
+
+    # Query the database
+    key = app.config["AWS_DYNAMODB_PRIMARY_KEY"]
+    table = app.config["AWS_DYNAMODB_ANNOTATIONS_TABLE"]
+
+    try:
+        db = boto3.resource('dynamodb', region_name=app.config["AWS_REGION_NAME"])
+        table = db.Table(table)
+        results = table.query(
+            KeyConditionExpression=Key(key).eq(id)
+        )
+    except ClientError as e:
+        logging.error(e)
+        code = e.response['ResponseMetadata']['HTTPStatusCode']
+        abort(code)
+
+    info = results["Items"][0]
+
+    try:
+        # Read the log file directly from S3 and load it into memory
+        # https://stackoverflow.com/a/48696641
+        s3 = boto3.resource('s3', app.config["AWS_REGION_NAME"])
+        s3_results_bucket = s3.Bucket(app.config["AWS_S3_RESULTS_BUCKET"])
+        log_file = s3_results_bucket.Object(info['s3_key_log_file'])
+        # Read it into a ByteIO object
+        raw_input = io.BytesIO(log_file.get()['Body'].read())
+
+    except ClientError as e:
+        code = e.response['ResponseMetadata']['HTTPStatusCode']
+        abort(code)
+
+    # Render the template with decoded text
+    return render_template('view_log.html', job_id=id,
+                           log_file_contents=raw_input.read().decode("utf-8"))
 
 
 @app.route('/subscribe', methods=['GET', 'POST'])

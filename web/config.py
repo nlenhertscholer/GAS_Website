@@ -105,6 +105,7 @@ class Config(object):
     AWS_S3_KEY_PREFIX = "nlenhertscholer/"
     AWS_S3_ACL = "private"
     AWS_S3_ENCRYPTION = "AES256"
+    AWS_S3_CLIENTMETHOD = 'get_object'
 
     AWS_GLACIER_VAULT = "ucmpcs"
 
