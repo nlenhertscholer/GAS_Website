@@ -117,7 +117,8 @@ class Config(object):
     # Change the table name to your own
     AWS_DYNAMODB_ANNOTATIONS_TABLE = "nlenhertscholer_annotations"
     AWS_DYNAMODB_USERID_INDEX = "user_id_index"
-    AWS_DYNAMODB_TABLE_KEY = "user_id"
+    AWS_DYNAMODB_USER_TABLE_KEY = "user_id"
+    AWS_DYNAMODB_PRIMARY_KEY = "job_id"
 
     # Change the email address to your username
     MAIL_DEFAULT_SENDER = "nlenhertscholer@ucmpcs.org"

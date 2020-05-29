@@ -23,12 +23,13 @@ University of Chicago
       <hr />
       <strong>Annotated Results File</strong>: 
       {% if free_access_expired %}
-        <a href="{{ url_for('subscribe') }}">upgrade to Premium for download</a><br /> 
+        <a href="{{ url_for('subscribe') }}">upgrade to Premium for download</a>
       {% elif 'restore_message' in annotation %}
-        {{ annotation['restore_message'] }}<br />
+        {{ annotation['restore_message'] }}
       {% elif 'result_file_url' in annotation %}
-        <a href="{{ annotation['result_file_url'] }}">download</a><br />
+        <a href="{{ annotation['result_file_url'] }}">download</a>
       {% endif %}
+      <br />
       <strong>Annotation Log File</strong>: <a href="{{ url_for('annotation_log', id=annotation['job_id'])}}">view</a><br />
       {% endif %}
     </p>

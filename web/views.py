@@ -183,7 +183,7 @@ def annotations_list():
 
     # Query the database
     index = app.config["AWS_DYNAMODB_USERID_INDEX"]
-    key = app.config["AWS_DYNAMODB_TABLE_KEY"]
+    key = app.config["AWS_DYNAMODB_USER_TABLE_KEY"]
     table = app.config["AWS_DYNAMODB_ANNOTATIONS_TABLE"]
     try:
         db = boto3.resource('dynamodb', region_name=app.config["AWS_REGION_NAME"])
@@ -211,7 +211,29 @@ def annotations_list():
 def annotation_details(id):
     """Display details of a specific annotation job
     """
-    pass
+
+    # Query the database
+    key = app.config["AWS_DYNAMODB_PRIMARY_KEY"]
+    table = app.config["AWS_DYNAMODB_ANNOTATIONS_TABLE"]
+
+    db = boto3.resource('dynamodb', region_name=app.config["AWS_REGION_NAME"])
+    table = db.Table(table)
+    results = table.query(
+        KeyConditionExpression=Key(key).eq(id)
+    )
+    info = results["Items"][0]
+
+    # Check that this user is authorized
+    if info["user_id"] != session["primary_identity"]:
+        abort(403)
+
+    # Convert to local time
+    info["submit_time"] = time.strftime('%Y-%m-%d %H:%M',
+                                        time.localtime(info["submit_time"]))
+    info["complete_time"] = time.strftime('%Y-%m-%d %H:%M',
+                                          time.localtime(info["complete_time"]))
+
+    return render_template('annotation_details.html', annotation=info)
 
 
 @app.route('/annotations/<id>/log', methods=['GET'])
