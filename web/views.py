@@ -263,8 +263,10 @@ def annotation_details(id):
     try:
         info['input_file_url'] = create_presigned_url(info['s3_inputs_bucket'],
                                                       info['s3_key_input_file'])
-        info['result_file_url'] = create_presigned_url(info['s3_results_bucket'],
-                                                       info['s3_key_result_file'])
+        if info['job_status'] == "COMPLETED":
+            info['result_file_url'] = create_presigned_url(info['s3_results_bucket'],
+                                                           info['s3_key_result_file']
+                                                           )
     except ClientError as e:
         code = e.response['ResponseMetadata']['HTTPStatusCode']
         abort(code)
@@ -272,8 +274,10 @@ def annotation_details(id):
     # Convert to local time
     info["submit_time"] = time.strftime('%Y-%m-%d %H:%M',
                                         time.localtime(info["submit_time"]))
-    info["complete_time"] = time.strftime('%Y-%m-%d %H:%M',
-                                          time.localtime(info["complete_time"]))
+
+    if info['job_status'] == "COMPLETED":
+        info["complete_time"] = time.strftime('%Y-%m-%d %H:%M',
+                                              time.localtime(info["complete_time"]))
 
     # Render HTML page
     return render_template('annotation_details.html', annotation=info)
