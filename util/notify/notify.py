@@ -10,6 +10,8 @@ __author__ = 'Vas Vasiliadis <vas@uchicago.edu>'
 import os
 import sys
 import boto3
+from botocore.exceptions import ClientError
+import psycopg2
 import json
 from configparser import ConfigParser
 
@@ -23,7 +25,7 @@ config.read("notify_config.ini")
 
 # Connect to SQS and get the message queue
 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#SQS.Queue
-queue_url = config['aws']['SQSResultsARN']
+queue_url = config['aws']['SQSResultsURL']
 sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
 queue = sqs.Queue(queue_url)
 
@@ -46,25 +48,36 @@ while True:
         job_id = input_data['job_id']
 
         # Retrieve user information and begin formatting email
-        profile = helpers.get_user_profile(user_id)
-        recipient = profile['email']
-        name = profile['name']
-        url = config['web']['BaseURL'] + job_id
-        subject = "GAS Job Annotation Completed"
-        body = f'Hello {name},<br/><br/>' \
-               f'Your annotation job ' \
-               f'<a class="link" href="{url}" target="_blank">{job_id}</a> ' \
-               f'has been completed.<br/><br/>' \
-               f'Thank you for using our GAS Platform,<br/>' \
-               f'Genomics Annotation Service'
+        success = True
+        try:
+            profile = helpers.get_user_profile(user_id)
+        except (ClientError, psycopg2.Error) as e:
+            print(f"Unable to retrieve user details: {e.response['Error']['Message']}")
+            success = False
 
-        # Send the email
-        response = helpers.send_email_ses(recipient, subject=subject, body=body)
+        if success:
+            recipient = profile['email']
+            name = profile['name']
+            url = config['web']['BaseURL'] + job_id
+            subject = "GAS Job Annotation Completed"
+            body = f'Hello {name},<br/><br/>' \
+                   f'Your annotation job ' \
+                   f'<a class="link" href="{url}" target="_blank">{job_id}</a> ' \
+                   f'has been completed.<br/><br/>' \
+                   f'Thank you for using our GAS Platform,<br/>' \
+                   f'Genomics Annotation Service'
 
-        # Delete the message if it was sent successfully
-        if response["ResponseMetadata"]['HTTPStatusCode'] == 200:
-            # Print out to keep a log
-            print(f"Email sent about Job ID: {job_id}")
-            # Delete the message from the queue,
-            # if job was successfully submitted
-            message[0].delete()
+            # Send the email
+            try:
+                response = helpers.send_email_ses(recipient, subject=subject, body=body)
+            except ClientError as e:
+                print(f"Unable to send email: {e.response['Error']['Message']}")
+                success = False
+
+            # Delete the message if it was sent successfully
+            if success and response["ResponseMetadata"]['HTTPStatusCode'] == 200:
+                # Print out to keep a log
+                print(f"Email sent about Job ID: {job_id}")
+                # Delete the message from the queue,
+                # if job was successfully submitted
+                message[0].delete()

@@ -141,7 +141,6 @@ if __name__ == '__main__':
         try:
             db = boto3.resource('dynamodb', region_name=config['aws']['RegionName'])
             table = db.Table(table)
-            print("About to update Item")
             table.update_item(
                 Key={
                     'job_id': job_id
@@ -174,7 +173,8 @@ if __name__ == '__main__':
         # Also push notification to archive job
         data = {"user_id": user_id,
                 "input_file_name": filename,
-                "job_id": job_id}
+                "job_id": job_id,
+                "results_file": results_key}
 
         data_json = json.dumps(data)
         sns_results_topic = config['aws']['SNSResultsTopic']
