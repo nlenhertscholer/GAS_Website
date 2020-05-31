@@ -263,7 +263,7 @@ def annotation_details(id):
     try:
         info['input_file_url'] = create_presigned_url(info['s3_inputs_bucket'],
                                                       info['s3_key_input_file'])
-        if info['job_status'] == "COMPLETED":
+        if session[""] info['job_status'] == "COMPLETED":
             info['result_file_url'] = create_presigned_url(info['s3_results_bucket'],
                                                            info['s3_key_result_file']
                                                            )
@@ -384,6 +384,9 @@ def unsubscribe():
         identity_id=session['primary_identity'],
         role="free_user"
     )
+
+    # Update role in the session
+    session['role'] = "free_user"
     return redirect(url_for('profile'))
 
 
