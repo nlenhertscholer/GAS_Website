@@ -14,6 +14,7 @@ from botocore.exceptions import ClientError
 import json
 from configparser import ConfigParser
 import psycopg2
+import io
 
 # Import utility helpers
 sys.path.insert(1, os.path.realpath(os.path.pardir))
@@ -63,7 +64,7 @@ while True:
                 try:
                     # Read the results file directly from S3 to send to Glacier
                     # https://stackoverflow.com/a/48696641
-                    s3 = boto3.resource('s3', config['aws']["RegionName"])
+                    s3 = boto3.resource('s3', region_name=config['aws']["RegionName"])
                     s3_results_bucket = s3.Bucket(config['aws']['S3ResultsBucket'])
                     log_file = s3_results_bucket.Object(results_file)
 
@@ -75,9 +76,9 @@ while True:
                 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/glacier.html#vault
                 if success:
                     try:
-                        glacier = boto3.resource('glacier')
-                        vault = glacier.Vault(config['aws']['GlacierName'])
-                        archive = vault.upload_archive(body=log_file)
+                        glacier = boto3.resource('glacier', region_name=config['aws']['RegionName'])
+                        vault = glacier.Vault(account_id='-', name=config['aws']['GlacierName'])
+                        archive = vault.upload_archive(body=io.BytesIO(log_file.get()['Body'].read()))
                         print(f"Successfully Uploaded File with job_id {job_id} to Glacier")
 
                         # Delete the log file
@@ -98,7 +99,8 @@ while True:
                             },
                             UpdateExpression='SET results_file_archive_id = :val1',
                             ExpressionAttributeValues={
-                                ':val1': archive['archiveId']
+                                # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/glacier.html#Glacier.Archive.id
+                                ':val1': archive.id
                             }
                         )
                     except ClientError as e:
