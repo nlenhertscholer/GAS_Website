@@ -263,7 +263,7 @@ def annotation_details(id):
     try:
         info['input_file_url'] = create_presigned_url(info['s3_inputs_bucket'],
                                                       info['s3_key_input_file'])
-        if session[""] info['job_status'] == "COMPLETED":
+        if info['job_status'] == "COMPLETED":
             info['result_file_url'] = create_presigned_url(info['s3_results_bucket'],
                                                            info['s3_key_result_file']
                                                            )
@@ -279,8 +279,13 @@ def annotation_details(id):
         info["complete_time"] = time.strftime('%Y-%m-%d %H:%M',
                                               time.localtime(info["complete_time"]))
 
+    # Check user's status and whether they can view file
+    expired = False
+    if session['role'] == "free_user" and "results_file_archive_id" in info.keys():
+        expired = True
+
     # Render HTML page
-    return render_template('annotation_details.html', annotation=info)
+    return render_template('annotation_details.html', annotation=info, free_access_expired=expired)
 
 
 @app.route('/annotations/<id>/log', methods=['GET'])
