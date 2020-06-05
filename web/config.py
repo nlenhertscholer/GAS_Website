@@ -114,6 +114,8 @@ class Config(object):
         "arn:aws:sns:us-east-1:127134666975:nlenhertscholer_job_requests"
     AWS_SNS_JOB_COMPLETE_TOPIC = \
         "arn:aws:sns:us-east-1:127134666975:nlenhertscholer_job_results"
+    AWS_SNS_RESTORE_TOPIC = \
+        "arn:aws:sns:us-east-1:127134666975:nlenhertscholer_restore"
 
     # Change the table name to your own
     AWS_DYNAMODB_ANNOTATIONS_TABLE = "nlenhertscholer_annotations"

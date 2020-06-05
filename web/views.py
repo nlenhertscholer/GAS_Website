@@ -373,6 +373,17 @@ def subscribe():
         # Request restoration of the user's data from Glacier
         # Add code here to initiate restoration of archived user data
         # Make sure you handle files not yet archived!
+        # Send message to request queue
+        data = {"user_id": session['primary_identity']}
+        data_json = json.dumps(data)
+        sns_topic = app.config["AWS_SNS_RESTORE_TOPIC"]
+        try:
+            sns = boto3.client('sns', region_name=app.config["AWS_REGION_NAME"])
+            _ = sns.publish(TopicArn=sns_topic, Message=data_json)
+        except ClientError as e:
+            logging.error(e)
+            code = e.response['ResponseMetadata']['HTTPStatusCode']
+            abort(code)
 
         # Display confirmation page
         return render_template('subscribe_confirm.html',
