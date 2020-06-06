@@ -65,9 +65,10 @@ while True:
 
         data = results["Items"]
 
-        success = True
+        total_success = True
         # Process each database object
         for item in data:
+            job_success = True
             if archive_key in item:
                 s3_results_key = item["s3_key_result_file"]
                 job_id = item["job_id"]
@@ -87,41 +88,44 @@ while True:
                 try:
                     # Run the expedited retrieval
                     response = glacier.initiate_job(
-                        vaultName=config["GlacierName"],
+                        vaultName=config['aws']["GlacierName"],
                         jobParameters=job_params
                     )
                 except ClientError as e:
+                    print("Slow retrieval")
                     try:
                         job_params["Tier"] = config["aws"]["Slow"]
                         response = glacier.initiate_job(
-                            vaultName=config["GlacierName"],
+                            vaultName=config['aws']["GlacierName"],
                             jobParameters=job_params
                         )
                     except ClientError as e:
-                        print(f"Error in uploading file to Glacier: {e.response['Error']['Message']}")
-                        success = False
+                        print(f"Error in restoring file from Glacier: {e.response['Error']['Message']}")
+                        total_success = False
+                        job_success = False
 
                 # Update database for object
-                if success:
+                if job_success:
                     try:
                         table.update_item(
                             Key={
                                 'job_id': job_id
                             },
-                            UpdateExpression='SET restore_message = :val1'
-                                             'REMOVE :val2',
+                            UpdateExpression='SET restore_message = :val1 REMOVE #ARCHKEY',
                             ExpressionAttributeValues={
                                 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/glacier.html#Glacier.Archive.id
                                 ':val1': config["aws"]["RestoreMessage"],
-                                ':val2': config["aws"]["ArchiveKey"]
-
+                            },
+                            ExpressionAttributeNames={
+                                # I know it's ruby but it gave me the idea to use this parameter
+                                # https://stackoverflow.com/questions/45553443/how-to-separate-multiple-clauses-in-a-dynamodb-update-expression
+                                "#ARCHKEY": config["aws"]["ArchiveKey"]
                             }
                         )
                     except ClientError as e:
                         print(f"Unable to update table data: {e.response['Error']['Message']}")
 
         # Remove the message if it succeeded, else retry
-        if success:
+        if total_success:
             message[0].delete()
-
 
