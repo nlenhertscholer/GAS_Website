@@ -24,6 +24,8 @@ config = ConfigParser(os.environ)
 config.read('restore_config.ini')
 
 # Connect to SQS and get the message queue
+# If this throws an exception then that's okay, the program should not start if
+# it cannot connect to SQS
 queue_url = config['aws']["SQSRestoreURL"]
 sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
 queue = sqs.Queue(queue_url)
