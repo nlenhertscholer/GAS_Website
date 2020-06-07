@@ -25,9 +25,13 @@ config.read("notify_config.ini")
 
 # Connect to SQS and get the message queue
 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#SQS.Queue
-queue_url = config['aws']['SQSResultsURL']
-sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
-queue = sqs.Queue(queue_url)
+try:
+    queue_url = config['aws']['SQSResultsURL']
+    sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
+    queue = sqs.Queue(queue_url)
+except ClientError as e:
+    print(f"Unable to connect to Results SQS to send Email: {e.response['Error']['Message']}")
+    exit(1)
 
 while True:
 
@@ -76,8 +80,6 @@ while True:
 
             # Delete the message if it was sent successfully
             if success and response["ResponseMetadata"]['HTTPStatusCode'] == 200:
-                # Print out to keep a log
-                print(f"Email sent about Job ID: {job_id}")
                 # Delete the message from the queue,
                 # if job was successfully submitted
                 message[0].delete()

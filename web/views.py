@@ -184,7 +184,7 @@ def create_annotation_job_request():
     try:
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns.html#SNS.Topic.publish
         sns = boto3.client('sns', region_name=app.config["AWS_REGION_NAME"])
-        msg = sns.publish(TopicArn=sns_topic, Message=data_json)
+        _ = sns.publish(TopicArn=sns_topic, Message=data_json)
     except ClientError as e:
         logging.error(e)
         code = e.response['ResponseMetadata']['HTTPStatusCode']
@@ -314,6 +314,10 @@ def annotation_log(id):
     except IndexError:
         abort(404)
 
+    # Check that this user is authorized
+    if info["user_id"] != session["primary_identity"]:
+        abort(403)
+
     try:
         # Read the log file directly from S3 and load it into memory
         # https://stackoverflow.com/a/48696641
@@ -328,6 +332,7 @@ def annotation_log(id):
         abort(code)
 
     # Render the template with decoded text
+    # https://docs.python.org/3/library/stdtypes.html#bytes.decode
     return render_template('view_log.html', job_id=id,
                            log_file_contents=raw_input.read().decode("utf-8"))
 

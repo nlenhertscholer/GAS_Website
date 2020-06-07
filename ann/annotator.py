@@ -67,9 +67,6 @@ def process_job(data):
         print("Bad Key to retrieve data:", e)
         return False
 
-    # Print something to the console just to know that something was received
-    print("Message received to process Job Id:", job_id)
-
     # Download the file and store it locally
     try:
         file, uid = download_file(bucket, key, job_id, upload_file)
@@ -111,9 +108,13 @@ if __name__ == "__main__":
 
     # Connect to SQS and get the message queue
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#SQS.Queue
-    queue_url = config['aws']['SQSUrl']
-    sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
-    queue = sqs.Queue(queue_url)
+    try:
+        queue_url = config['aws']['SQSUrl']
+        sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
+        queue = sqs.Queue(queue_url)
+    except ClientError as e:
+        print(f"Unable to connect to Job Request SQS: {e.response['Error']['Message']}")
+        exit(1)
 
     while True:
 

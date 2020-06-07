@@ -25,9 +25,13 @@ config = ConfigParser(os.environ)
 config.read('archive_config.ini')
 
 # Connect to SQS and get the message queue
-queue_url = config['aws']["SQSArchiveURL"]
-sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
-queue = sqs.Queue(queue_url)
+try:
+    queue_url = config['aws']["SQSArchiveURL"]
+    sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
+    queue = sqs.Queue(queue_url)
+except ClientError as e:
+    print(f"Unable to connect to Archive Retrieval SQS: {e.response['Error']['Message']}")
+    exit(1)
 
 while True:
 
@@ -79,7 +83,6 @@ while True:
                         glacier = boto3.resource('glacier', region_name=config['aws']['RegionName'])
                         vault = glacier.Vault(account_id='-', name=config['aws']['GlacierName'])
                         archive = vault.upload_archive(body=io.BytesIO(log_file.get()['Body'].read()))
-                        print(f"Successfully Uploaded File with job_id {job_id} to Glacier")
 
                         # Delete the log file
                         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Object.delete
@@ -104,7 +107,7 @@ while True:
                             }
                         )
                     except ClientError as e:
-                        print(f"Unable to update database with Glacier Archive ID: "
+                        print(f"Unable to update database with Glacier Archive ID: {archive.id}"
                               f"{e.response['Error']['Message']}")
 
         # If everything happened successfully then delete the message

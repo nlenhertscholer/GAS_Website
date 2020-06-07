@@ -23,11 +23,13 @@ config = ConfigParser(os.environ)
 config.read('thaw_config.ini')
 
 # Connect to SQS and get the message queue
-# If this throws an exception then that's okay, the program should not start if
-# it cannot connect to SQS
-queue_url = config['aws']["SQSThawURL"]
-sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
-queue = sqs.Queue(queue_url)
+try:
+    queue_url = config['aws']["SQSThawURL"]
+    sqs = boto3.resource("sqs", region_name=config['aws']['RegionName'])
+    queue = sqs.Queue(queue_url)
+except ClientError as e:
+    print(f"Unable to connect to Archive Thaw SQS: {e.response['Error']['Message']}")
+    exit(1)
 
 
 def extract_uid(s3_key):
@@ -35,6 +37,7 @@ def extract_uid(s3_key):
 
     uid_file = s3_key.split('/')[2]
     return uid_file.split('~')[0]
+
 
 # Add utility code here
 while True:
