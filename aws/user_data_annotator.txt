@@ -1,0 +1,8 @@
+#!/bin/bash
+mkdir /home/ubuntu/gas
+source /home/ubuntu/.virtualenvs/mpcs/bin/activate
+aws s3 cp s3://mpcs-students/nlenhertscholer/gas_annotator.zip /home/ubuntu/gas/.
+unzip /home/ubuntu/gas/gas_annotator.zip -d /home/ubuntu/gas/
+chown -R ubuntu:ubuntu /home/ubuntu/gas/*
+chmod +x /home/ubuntu/gas/ann/run_ann.sh
+sudo -u ubuntu /home/ubuntu/gas/ann/run_ann.sh &
