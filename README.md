@@ -1,6 +1,10 @@
 # cp-nlenhertscholer
 cp-nlenhertscholer created by GitHub Classroom
 
+## Notes on changed config files in web directory
+I was experiencing issues during autoscaling. GUNICORN workers were timing out and not able to retrieve an HTTPS request,
+so the website was not working. To alleviate this, I added a `--timeout` flag in run_gas.sh and set it to 120 (this can be seen in the .env file). This was able to fix the issue, and now instances are provisioned in a healthy state.
+
 ## Archive Process
 For the archive process, I have 1 SNS (nlenhertscholer_archive) that the web-app send a message to once a job is completed.
 An SQS is subscribed to this topic, and has a message retrieval delay of 5 minutes. This would be enough for the user,
