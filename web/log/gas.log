@@ -1,0 +1,299 @@
+2020-05-17 14:23:49,982 INFO: Login attempted from IP 72.181.136.69 
+2020-05-17 14:24:57,767 INFO: Worker exiting (pid: 17303) 
+2020-05-17 14:24:57,769 INFO: Worker exiting (pid: 17302) 
+2020-05-17 14:26:53,072 INFO: Worker exiting (pid: 17317) 
+[2020-05-21 23:02:37 -0500] [1089] [DEBUG] Current configuration:
+  config: None
+  bind: ['0.0.0.0:4433']
+  backlog: 2048
+  workers: 2
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/ubuntu/gas/web
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: None
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /home/ubuntu/gas/web/log/gas.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: gas:app
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x7f3a941b2ea0>
+  on_reload: <function OnReload.on_reload at 0x7f3a941c9048>
+  when_ready: <function WhenReady.when_ready at 0x7f3a941c9158>
+  pre_fork: <function Prefork.pre_fork at 0x7f3a941c9268>
+  post_fork: <function Postfork.post_fork at 0x7f3a941c9378>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x7f3a941c9488>
+  worker_int: <function WorkerInt.worker_int at 0x7f3a941c9598>
+  worker_abort: <function WorkerAbort.worker_abort at 0x7f3a941c96a8>
+  pre_exec: <function PreExec.pre_exec at 0x7f3a941c97b8>
+  pre_request: <function PreRequest.pre_request at 0x7f3a941c98c8>
+  post_request: <function PostRequest.post_request at 0x7f3a941c9950>
+  child_exit: <function ChildExit.child_exit at 0x7f3a941c9a60>
+  worker_exit: <function WorkerExit.worker_exit at 0x7f3a941c9b70>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x7f3a941c9c80>
+  on_exit: <function OnExit.on_exit at 0x7f3a941c9d90>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: /usr/local/src/ssl/ucmpcs.org.key
+  certfile: /usr/local/src/ssl/ucmpcs.org.crt
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  strip_header_spaces: False
+[2020-05-21 23:02:37 -0500] [1089] [INFO] Starting gunicorn 20.0.4
+[2020-05-21 23:02:37 -0500] [1089] [DEBUG] Arbiter booted
+[2020-05-21 23:02:37 -0500] [1089] [INFO] Listening at: https://0.0.0.0:4433 (1089)
+[2020-05-21 23:02:37 -0500] [1089] [INFO] Using worker: sync
+[2020-05-21 23:02:37 -0500] [1092] [INFO] Booting worker with pid: 1092
+[2020-05-21 23:02:37 -0500] [1104] [INFO] Booting worker with pid: 1104
+[2020-05-21 23:02:37 -0500] [1089] [DEBUG] 2 workers
+[2020-05-21 23:02:47 -0500] [1092] [DEBUG] Error processing SSL request.
+[2020-05-21 23:02:47 -0500] [1092] [DEBUG] Invalid request from ip=72.181.136.69: [SSL: HTTP_REQUEST] http request (_ssl.c:2309)
+[2020-05-21 23:02:47 -0500] [1092] [DEBUG] Failed to send error message.
+[2020-05-21 23:02:48 -0500] [1104] [DEBUG] Error processing SSL request.
+[2020-05-21 23:02:48 -0500] [1104] [DEBUG] Invalid request from ip=72.181.136.69: [SSL: HTTP_REQUEST] http request (_ssl.c:2309)
+[2020-05-21 23:02:48 -0500] [1104] [DEBUG] Failed to send error message.
+[2020-05-21 23:02:51 -0500] [1089] [INFO] Handling signal: int
+[2020-05-21 23:02:51 -0500] [1089] [INFO] Shutting down: Master
+[2020-05-21 23:02:56 -0500] [1137] [DEBUG] Current configuration:
+  config: None
+  bind: ['0.0.0.0:4433']
+  backlog: 2048
+  workers: 2
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/ubuntu/gas/web
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: None
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /home/ubuntu/gas/web/log/gas.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: gas:app
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x7f30b18ede18>
+  on_reload: <function OnReload.on_reload at 0x7f30b18edf28>
+  when_ready: <function WhenReady.when_ready at 0x7f30b19070d0>
+  pre_fork: <function Prefork.pre_fork at 0x7f30b19071e0>
+  post_fork: <function Postfork.post_fork at 0x7f30b19072f0>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x7f30b1907400>
+  worker_int: <function WorkerInt.worker_int at 0x7f30b1907510>
+  worker_abort: <function WorkerAbort.worker_abort at 0x7f30b1907620>
+  pre_exec: <function PreExec.pre_exec at 0x7f30b1907730>
+  pre_request: <function PreRequest.pre_request at 0x7f30b1907840>
+  post_request: <function PostRequest.post_request at 0x7f30b19078c8>
+  child_exit: <function ChildExit.child_exit at 0x7f30b19079d8>
+  worker_exit: <function WorkerExit.worker_exit at 0x7f30b1907ae8>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x7f30b1907bf8>
+  on_exit: <function OnExit.on_exit at 0x7f30b1907d08>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: /usr/local/src/ssl/ucmpcs.org.key
+  certfile: /usr/local/src/ssl/ucmpcs.org.crt
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  strip_header_spaces: False
+[2020-05-21 23:02:56 -0500] [1137] [INFO] Starting gunicorn 20.0.4
+[2020-05-21 23:02:56 -0500] [1137] [DEBUG] Arbiter booted
+[2020-05-21 23:02:56 -0500] [1137] [INFO] Listening at: https://0.0.0.0:4433 (1137)
+[2020-05-21 23:02:56 -0500] [1137] [INFO] Using worker: sync
+[2020-05-21 23:02:56 -0500] [1140] [INFO] Booting worker with pid: 1140
+[2020-05-21 23:02:56 -0500] [1142] [INFO] Booting worker with pid: 1142
+[2020-05-21 23:02:57 -0500] [1137] [DEBUG] 2 workers
+[2020-05-21 23:03:01 -0500] [1137] [INFO] Handling signal: int
+[2020-05-21 23:03:01 -0500] [1140] [INFO] Worker exiting (pid: 1140)
+2020-05-21 23:03:01,711 INFO: Worker exiting (pid: 1140) 
+[2020-05-21 23:03:01 -0500] [1137] [INFO] Shutting down: Master
+2020-05-21 23:03:32,494 INFO: Login attempted from IP 72.181.136.69 
+2020-05-21 23:03:51,159 INFO: Login attempted from IP 72.181.136.69 
+2020-05-21 23:05:00,357 INFO: Worker exiting (pid: 1166) 
+[2020-05-21 23:06:11 -0500] [1769] [DEBUG] Current configuration:
+  config: None
+  bind: ['0.0.0.0:4433']
+  backlog: 2048
+  workers: 2
+  worker_class: sync
+  threads: 1
+  worker_connections: 1000
+  max_requests: 0
+  max_requests_jitter: 0
+  timeout: 30
+  graceful_timeout: 30
+  keepalive: 2
+  limit_request_line: 4094
+  limit_request_fields: 100
+  limit_request_field_size: 8190
+  reload: False
+  reload_engine: auto
+  reload_extra_files: []
+  spew: False
+  check_config: False
+  preload_app: False
+  sendfile: None
+  reuse_port: False
+  chdir: /home/ubuntu/gas/web
+  daemon: False
+  raw_env: []
+  pidfile: None
+  worker_tmp_dir: None
+  user: 1000
+  group: 1000
+  umask: 0
+  initgroups: False
+  tmp_upload_dir: None
+  secure_scheme_headers: {'X-FORWARDED-PROTOCOL': 'ssl', 'X-FORWARDED-PROTO': 'https', 'X-FORWARDED-SSL': 'on'}
+  forwarded_allow_ips: ['127.0.0.1']
+  accesslog: None
+  disable_redirect_access_to_syslog: False
+  access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
+  errorlog: /home/ubuntu/gas/web/log/gas.log
+  loglevel: debug
+  capture_output: False
+  logger_class: gunicorn.glogging.Logger
+  logconfig: None
+  logconfig_dict: {}
+  syslog_addr: udp://localhost:514
+  syslog: False
+  syslog_prefix: None
+  syslog_facility: user
+  enable_stdio_inheritance: False
+  statsd_host: None
+  dogstatsd_tags: 
+  statsd_prefix: 
+  proc_name: None
+  default_proc_name: gas:app
+  pythonpath: None
+  paste: None
+  on_starting: <function OnStarting.on_starting at 0x7f6fcdddbe18>
+  on_reload: <function OnReload.on_reload at 0x7f6fcdddbf28>
+  when_ready: <function WhenReady.when_ready at 0x7f6fcddf50d0>
+  pre_fork: <function Prefork.pre_fork at 0x7f6fcddf51e0>
+  post_fork: <function Postfork.post_fork at 0x7f6fcddf52f0>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x7f6fcddf5400>
+  worker_int: <function WorkerInt.worker_int at 0x7f6fcddf5510>
+  worker_abort: <function WorkerAbort.worker_abort at 0x7f6fcddf5620>
+  pre_exec: <function PreExec.pre_exec at 0x7f6fcddf5730>
+  pre_request: <function PreRequest.pre_request at 0x7f6fcddf5840>
+  post_request: <function PostRequest.post_request at 0x7f6fcddf58c8>
+  child_exit: <function ChildExit.child_exit at 0x7f6fcddf59d8>
+  worker_exit: <function WorkerExit.worker_exit at 0x7f6fcddf5ae8>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x7f6fcddf5bf8>
+  on_exit: <function OnExit.on_exit at 0x7f6fcddf5d08>
+  proxy_protocol: False
+  proxy_allow_ips: ['127.0.0.1']
+  keyfile: /usr/local/src/ssl/ucmpcs.org.key
+  certfile: /usr/local/src/ssl/ucmpcs.org.crt
+  ssl_version: 2
+  cert_reqs: 0
+  ca_certs: None
+  suppress_ragged_eofs: True
+  do_handshake_on_connect: False
+  ciphers: None
+  raw_paste_global_conf: []
+  strip_header_spaces: False
+[2020-05-21 23:06:11 -0500] [1769] [INFO] Starting gunicorn 20.0.4
+[2020-05-21 23:06:11 -0500] [1769] [DEBUG] Arbiter booted
+[2020-05-21 23:06:11 -0500] [1769] [INFO] Listening at: https://0.0.0.0:4433 (1769)
+[2020-05-21 23:06:11 -0500] [1769] [INFO] Using worker: sync
+[2020-05-21 23:06:11 -0500] [1772] [INFO] Booting worker with pid: 1772
+[2020-05-21 23:06:11 -0500] [1773] [INFO] Booting worker with pid: 1773
+[2020-05-21 23:06:11 -0500] [1769] [DEBUG] 2 workers
+[2020-05-21 23:06:13 -0500] [1769] [INFO] Handling signal: int
+[2020-05-21 23:06:14 -0500] [1769] [INFO] Shutting down: Master
+2020-05-21 23:17:46,449 INFO: Worker exiting (pid: 1813) 
+2020-05-21 23:21:27,778 INFO: Worker exiting (pid: 1814) 
+2020-05-21 23:21:27,783 INFO: Worker exiting (pid: 1815) 
+2020-05-21 23:21:52,786 INFO: Worker exiting (pid: 2358) 
+2020-05-25 16:11:13,722 INFO: Worker exiting (pid: 10468) 
